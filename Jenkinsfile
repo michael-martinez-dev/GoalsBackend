@@ -17,6 +17,23 @@ pipeline {
             sh 'docker version'
           }
         }
+        stage('Env vars set-up') {
+          steps {
+            sh 'echo "LOG_LEVEL=$GB_LOG_LEVEL" >> .env'
+            sh 'echo "API_PORT=$GB_API_PORT" >> .env'
+            sh 'echo "POSTGRES_USER=$GB_POSTGRES_USER" >> .env'
+            sh 'echo "POSTGRES_PASS=$GB_POSTGRES_PASS" >> .env'
+            sh 'echo "POSTGRES_HOST=$GB_POSTGRES_HOST" >> .env'
+            sh 'echo "POSTGRES_PORT=$GB_POSTGRES_PORT" >> .env'
+            sh 'echo "POSTGRES_DB=$GB_POSTGRES_DB" >> .env'
+            sh 'echo "NATS_HOST=$GB_NATS_HOST" >> .env'
+            sh 'echo "NATS_PORT=$GB_NATS_PORT" >> .env'
+            sh 'echo "NATS_USER=$GB_NATS_USER" >> .env'
+            sh 'echo "NATS_PASS=$GB_NATS_PASS" >> .env'
+            sh 'echo "JWT_SECRET_KEY=$SAB_JWT_SECRET_KEY" >> .env'
+            sh 'echo "" >> .env'
+          }
+        }
       }
     }
 
