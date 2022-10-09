@@ -14,11 +14,19 @@ services:
       - 5432:5432
     volumes:
       - ../data/postgres:/var/lib/postgresql/data
+    networks:
+      - dev
   nats:
     container_name: nats
     hostname: nats
     image: nats:alpine
+    restart: always
     ports:
       - '4222:4222'
       - '8222:8222'
-    restart: always
+    networks:
+      - dev
+
+networks:
+  dev:
+    name: dev

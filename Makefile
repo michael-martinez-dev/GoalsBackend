@@ -68,11 +68,15 @@ image-run: image db
 	$(APP_NAME)-recommender:latest
 
 compose: image db
-	docker compose --profile goals -f ./build/docker-compose.db.yml up --build -d
-	docker compose --profile goals -f ./build/docker-compose.api.yml up --build -d
+	docker compose -f ./build/docker-compose.db.yml up --build -d
+	sleep 5
+	docker compose -f ./build/docker-compose.api.yml up --build -d
+
+prod:
+	docker compose -f ./build/docker-compose.prod.yml up --build -d
 
 clean:
-	rm -f ./bin/$(APP_BIN)
+	rm -f ./api/bin/$(APP_BIN) ./recommender/bin/$(APP_BIN)
 	docker rm -f $(APP_NAME)-api $(APP_NAME)-recommender
-	docker compose --profile goals -f ./build/docker-compose.db.yml down
-	docker compose --profile goals -f ./build/docker-compose.api.yml down
+	docker compose -f ./build/docker-compose.db.yml down
+	docker compose -f ./build/docker-compose.api.yml down

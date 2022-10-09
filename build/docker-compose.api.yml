@@ -7,9 +7,17 @@ services:
     image: goals-api:latest
     ports:
       - 8080:8080
+    networks:
+      - dev
   recommender:
     container_name: recommender
     hostname: recommender
     image: goals-recommender:latest
     ports:
       - 8081:8080
+    networks:
+      - dev
+
+networks:
+  dev:
+    name: dev
