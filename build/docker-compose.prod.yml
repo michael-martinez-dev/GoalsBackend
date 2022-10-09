@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  goals-api:
+    container_name: goals-api
+    hostname: goals-api
+    image: goals-api:v1
+    ports:
+      - "80:8080"
+    env_file:
+      - prod.env
+    depends_on:
+      - postgres
+      - nats
+    networks:
+      - web-net
+      - postgres-net
+      - nats-net
+  goals-recommender:
+    container_name: goals-recommender
+    hostname: goals-recommender
+    image: goals-recommender:v1
+    env_file:
+      - prod.env
+    depends_on:
+      - nats
+    networks:
+      - nat-net
+  postgres:
+    container_name: postgres
+    hostname: postgres
+    image: postgres:14.5
+    expose:
+      - "5432"
+    env_file:
+      - postgres.env
+    networks:
+      - postgres-net
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  nats:
+    container_name: nats
+    hostname: nats
+    image: nats:2.9
+    expose:
+      - "4222"
+    env_file:
+      - nats.env
+    networks:
+      - nats-net
+
+networks:
+  web-net:
+    name: web-net
+  nats-net:
+  postgres-net:
+
+volumes:
+  postgres-data:

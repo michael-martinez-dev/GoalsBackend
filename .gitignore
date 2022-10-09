@@ -15,3 +15,6 @@ bin/*
 # Dependency files
 *.env
 go.sum
+
+build/postgres/*
+data/*

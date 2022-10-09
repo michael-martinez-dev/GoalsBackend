@@ -5,11 +5,15 @@ APP_BIN = server
 DOCKERHUB_USER=mixedmachine
 
 
-.PHONY: db dev-api dev-rec pipeline image image-push image-run compose 
+.PHONY: build db dev-api dev-rec pipeline image image-push image-run compose 
 
 
-build: main.go api/*.go recommender/*.go
-	go mod tidy
+build:
+	cd api && \
+	go mod tidy && \
+	go build -o ./bin/$(APP_BIN).exe main.go
+	cd recommender && \
+	go mod tidy && \
 	go build -o ./bin/$(APP_BIN).exe main.go
 
 db:
@@ -29,11 +33,13 @@ dockerfile:
 	go build -o ./bin/$(APP_BIN) main.go
 
 image:
-	docker build -f ./build/api.Dockerfile -t $(APP_NAME)-api:latest .
-	docker build -f ./build/api.Dockerfile -t $(APP_NAME)-api:$(APP_VERSION) .
+	docker build -f ./api/Dockerfile -t $(APP_NAME)-api:latest .
+	docker build -f ./api/Dockerfile -t $(APP_NAME)-api:$(APP_VERSION) .
 
-	docker build -f ./build/rec.Dockerfile -t $(APP_NAME)-recommender:latest .
-	docker build -f ./build/rec.Dockerfile -t $(APP_NAME)-recommender:$(APP_VERSION) .
+	docker build -f ./recommender/Dockerfile -t $(APP_NAME)-recommender:latest .
+	docker build -f ./recommender/Dockerfile -t $(APP_NAME)-recommender:$(APP_VERSION) .
+
+	docker image prune -f
 
 image-push:
 	docker tag $(APP_NAME)-api:latest $(DOCKERHUB_USER)/$(APP_NAME)-api:latest
@@ -48,7 +54,7 @@ image-push:
 
 # This will not be able to connect to db unless you change the .env
 # to a reachable host. Instead use compose.
-image-run: image
+image-run: image db
 	docker run -d \
 	-p 8081:8080 \
 	--env-file .env \
@@ -61,12 +67,16 @@ image-run: image
 	--name $(APP_NAME) \
 	$(APP_NAME)-recommender:latest
 
-compose: image
+compose: image db
 	docker compose -f ./build/docker-compose.db.yml up --build -d
+	sleep 5
 	docker compose -f ./build/docker-compose.api.yml up --build -d
 
+prod:
+	docker compose -f ./build/docker-compose.prod.yml up --build -d
+
 clean:
-	rm -f ./bin/$(APP_BIN)
+	rm -f ./api/bin/$(APP_BIN) ./recommender/bin/$(APP_BIN)
 	docker rm -f $(APP_NAME)-api $(APP_NAME)-recommender
 	docker compose -f ./build/docker-compose.db.yml down
 	docker compose -f ./build/docker-compose.api.yml down
