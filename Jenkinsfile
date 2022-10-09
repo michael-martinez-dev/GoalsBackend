@@ -7,7 +7,7 @@ pipeline {
           steps {
             git(url: 'https://github.com/MixedMachine/GoalsBackend', branch: 'prod')
             sh 'cd api && go mod tidy'
-            sj 'cd ..'
+            sh 'cd ..'
             sh 'cd recommender && go mod tidy'
           }
         }
@@ -22,17 +22,20 @@ pipeline {
         stage('Env vars set-up') {
           steps {
             sh 'echo "LOG_LEVEL=$GB_LOG_LEVEL" >> .env'
+            sh 'echo "API_HOST=$GB_API_HOST" >> .env'
             sh 'echo "API_PORT=$GB_API_PORT" >> .env'
             sh 'echo "POSTGRES_USER=$GB_POSTGRES_USER" >> .env'
             sh 'echo "POSTGRES_PASS=$GB_POSTGRES_PASS" >> .env'
             sh 'echo "POSTGRES_HOST=$GB_POSTGRES_HOST" >> .env'
             sh 'echo "POSTGRES_PORT=$GB_POSTGRES_PORT" >> .env'
             sh 'echo "POSTGRES_DB=$GB_POSTGRES_DB" >> .env'
+            sh 'echo "NATS_URL=$GB_NATS_URL" >> .env'
             sh 'echo "NATS_HOST=$GB_NATS_HOST" >> .env'
             sh 'echo "NATS_PORT=$GB_NATS_PORT" >> .env'
-            sh 'echo "NATS_USER=$GB_NATS_USER" >> .env'
-            sh 'echo "NATS_PASS=$GB_NATS_PASS" >> .env'
+            sh 'echo "NATS_GOALS_REC_TOPIC=$GB_NATS_GOALS_REC_TOPIC" >> .env'
             sh 'echo "JWT_SECRET_KEY=$SAB_JWT_SECRET_KEY" >> .env'
+            sh 'echo "GPT3_TOKEN=$GB_GPT3_TOKEN" >> .env'
+            sh 'echo "GPT3_MODEL=$GB_GPT3_MODEL" >> .env'
             sh 'echo "" >> .env'
           }
         }
