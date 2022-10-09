@@ -4,14 +4,14 @@ RUN apk update && apk add make
 
 WORKDIR /app
 
-COPY ./api/go.mod ./
-COPY ./api/go.sum ./
+COPY ./recommender/go.mod ./
+COPY ./recommender/go.sum ./
 
 RUN go mod download
 
-COPY ./api/main.go ./main.go
-COPY ./api/cmd ./cmd
-COPY ./api/pkg ./pkg
+COPY ./recommender/main.go ./main.go
+COPY ./recommender/cmd ./cmd
+COPY ./recommender/pkg ./pkg
 
 RUN mkdir -p /app/bin
 RUN go build -o ./bin/server main.go

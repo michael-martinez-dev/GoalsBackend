@@ -2,10 +2,14 @@ version: '3.8'
 
 services:
   api:
+    container_name: api
+    hostname: api
     image: goals-api:latest
     ports:
       - 8080:8080
   recommender:
+    container_name: recommender
+    hostname: recommender
     image: goals-recommender:latest
     ports:
       - 8081:8080

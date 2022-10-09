@@ -33,11 +33,13 @@ dockerfile:
 	go build -o ./bin/$(APP_BIN) main.go
 
 image:
-	docker build -f ./api/Dockerfile -t $(APP_NAME)-api:latest ./api
-	docker build -f ./api/Dockerfile -t $(APP_NAME)-api:$(APP_VERSION) ./api
+	docker build -f ./api/Dockerfile -t $(APP_NAME)-api:latest .
+	docker build -f ./api/Dockerfile -t $(APP_NAME)-api:$(APP_VERSION) .
 
-	docker build -f ./recommender/Dockerfile -t $(APP_NAME)-recommender:latest ./recommender
-	docker build -f ./recommender/Dockerfile -t $(APP_NAME)-recommender:$(APP_VERSION) ./recommender
+	docker build -f ./recommender/Dockerfile -t $(APP_NAME)-recommender:latest .
+	docker build -f ./recommender/Dockerfile -t $(APP_NAME)-recommender:$(APP_VERSION) .
+
+	docker image prune -f
 
 image-push:
 	docker tag $(APP_NAME)-api:latest $(DOCKERHUB_USER)/$(APP_NAME)-api:latest
@@ -66,11 +68,11 @@ image-run: image db
 	$(APP_NAME)-recommender:latest
 
 compose: image db
-	docker compose -f ./build/docker-compose.db.yml up --build -d
-	docker compose -f ./build/docker-compose.api.yml up --build -d
+	docker compose --profile goals -f ./build/docker-compose.db.yml up --build -d
+	docker compose --profile goals -f ./build/docker-compose.api.yml up --build -d
 
 clean:
 	rm -f ./bin/$(APP_BIN)
 	docker rm -f $(APP_NAME)-api $(APP_NAME)-recommender
-	docker compose -f ./build/docker-compose.db.yml down
-	docker compose -f ./build/docker-compose.api.yml down
+	docker compose --profile goals -f ./build/docker-compose.db.yml down
+	docker compose --profile goals -f ./build/docker-compose.api.yml down
