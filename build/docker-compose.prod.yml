@@ -4,11 +4,11 @@ services:
   goals-api:
     container_name: goals-api
     hostname: goals-api
-    image: goals-api:v1
+    image: mixedmachine/goals-api:v1
     ports:
       - "80:8080"
     env_file:
-      - prod.env
+      - ../prod.env
     depends_on:
       - postgres
       - nats
@@ -19,13 +19,13 @@ services:
   goals-recommender:
     container_name: goals-recommender
     hostname: goals-recommender
-    image: goals-recommender:v1
+    image: mixedmachine/goals-recommender:v1
     env_file:
-      - prod.env
+      - ../prod.env
     depends_on:
       - nats
     networks:
-      - nat-net
+      - nats-net
   postgres:
     container_name: postgres
     hostname: postgres
@@ -33,7 +33,7 @@ services:
     expose:
       - "5432"
     env_file:
-      - postgres.env
+      - ../postgres.env
     networks:
       - postgres-net
     volumes:
@@ -45,7 +45,7 @@ services:
     expose:
       - "4222"
     env_file:
-      - nats.env
+      - ../nats.env
     networks:
       - nats-net
 
