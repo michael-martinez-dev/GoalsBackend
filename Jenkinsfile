@@ -6,7 +6,9 @@ pipeline {
         stage('Checkout Code') {
           steps {
             git(url: 'https://github.com/MixedMachine/GoalsBackend', branch: 'prod')
-            sh 'go mod tidy'
+            sh 'cd api && go mod tidy'
+            sj 'cd ..'
+            sh 'cd recommender && go mod tidy'
           }
         }
 
@@ -40,7 +42,8 @@ pipeline {
     stage('Unit tests') {
       steps {
         echo 'Running Unit tests...'
-        sh 'go test ./tests/unit/...'
+        sh 'cd api && go test ./tests/unit/...'
+        sh 'cd recommender && go test ./tests/unit/...'
       }
     }
 
