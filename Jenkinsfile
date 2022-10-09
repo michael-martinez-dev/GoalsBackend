@@ -5,7 +5,7 @@ pipeline {
       parallel {
         stage('Checkout Code') {
           steps {
-            git(url: 'https://github.com/MixedMachine/SimpleAuthBackend', branch: 'prod')
+            git(url: 'https://github.com/MixedMachine/GoalsBackend', branch: 'prod')
             sh 'go mod tidy'
           }
         }
