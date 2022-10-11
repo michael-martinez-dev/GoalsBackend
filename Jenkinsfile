@@ -45,8 +45,8 @@ pipeline {
     stage('Unit tests') {
       steps {
         echo 'Running Unit tests...'
-        sh 'cd api && go test ./tests/unit/...'
-        sh 'cd recommender && go test ./tests/unit/...'
+        sh 'cd api && go test ./tests/unit/... && cd ..'
+        sh 'cd recommender && go test ./tests/unit/... && cd ..'
       }
     }
 
