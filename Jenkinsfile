@@ -97,6 +97,7 @@ pipeline {
     stage('Prod env set-up') {
       steps {
         echo 'Setting up production environment...'
+        sh 'ssh ${PROD_USER}@${PROD_IP} "cd code/GoalsApi && git pull --rebase --autostash && make prod"'
       }
     }
 
