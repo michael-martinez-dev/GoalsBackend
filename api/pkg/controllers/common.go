@@ -31,7 +31,7 @@ func AuthRequest(ctx *fiber.Ctx, c *http.Client) (string, error) {
 
 	req, err := http.NewRequest(
 		"GET",
-		os.Getenv("SERVICE_USER_AUTH_HOST") + AuthUrlEndpoint,
+		"https://auth.mixedmachine.ml" + AuthUrlEndpoint,
 		nil,
 	)
 	if err != nil {
